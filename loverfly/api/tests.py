@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.contrib.auth.models import User
 from couples.models import Couple
 from posts.models import Post
 from accounts.models import UserProfile
@@ -23,13 +24,17 @@ class APISetupTests(TestCase):
         return response.json()
 
     def log_in_a_user(self, username, password):
+        # log in a user:
         self.login_response = self.client.post(
             self.LOCAL_HOST + reverse("api-token-auth"),
             data={"username": "Kai", "password": "HelloWorld1!"},
         )
         self.login_response = self.login_response.json()
+        # set the userprofile to self:
+        self.user_profile = UserProfile.objects.get(user__id=self.main_user.data['id'])
 
     def create_a_user(self, username, email, password):
+        # create a user:
         user_response = self.client.post(
             self.LOCAL_HOST + reverse("sign_up"),
             data={
@@ -53,7 +58,62 @@ class APISetupTests(TestCase):
             partner_one=partner_one, partner_two=partner_two
         )
 
+    def create_20_couples(self):
+        username_list = [
+            'Moe',
+            'Johnny',
+            'Abu',
+            'Steve',
+            'Saks',
+            'Amy',
+            'Marrisa',
+            'Sne',
+            'Zama',
+            'Tony',
+            'Anthony',
+            'Macy',
+            'Tina',
+            'Lila',
+            'Amaya',
+            'Bella',
+            'Edward',
+            'Emma',
+            'Felix',
+            'Frank',
+        ]
+        # create accounts for all the names above:
+        for username in username_list:
+            User.objects.create(username=username, password="poopypoop")
+        # get the user profiles:
+        user_profiles = list(UserProfile.objects.all())
+        # create couples for each pair of these users:
+        index_starter = 0
+        index_skipper = 1
+        for index, user in enumerate(user_profiles):
+            index = index + 1
+            if index <= len(username_list) / 2:
+                partner_one = user_profiles[index_starter]
+                partner_two = user_profiles[user_profiles.index(partner_one) + index_skipper]
+                index_starter = index_starter + 2
+                Couple.objects.create(partner_one=partner_one, partner_two=partner_two)
+            else:
+                break
+        # create a post for each couple:
+        couples = Couple.objects.all()
+        for couple in couples:
+            Post.objects.create(
+                couple=couple,
+                caption=str(couple.partner_one.username + ' + ' + couple.partner_two.username),
+                image="https://i.pinimg.com/originals/6c/7c/ce/6c7cce376c32532c7d503974d23a057f.jpg"
+            )
+            couple.has_posts = True
+            couple.save()
+
     def setUp(self) -> None:
+
+        # create more couples:
+        self.create_20_couples()
+
         # create main user and userprofile:
         self.main_user = self.client.post(
             self.LOCAL_HOST + reverse("sign_up"),

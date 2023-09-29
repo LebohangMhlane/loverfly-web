@@ -1,31 +1,34 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 
 # from rest_framework.permissions import IsAdminUser, IsAuthenticated TODO: will activate later
 from couples.models import Couple
 from favourites.models import Fan
 from couples.serializers import CoupleSerializer
-from accounts.models import UserProfile
 
 @api_view(["GET"])
-@permission_classes([])
+@permission_classes([IsAuthenticated])
 def favourite_a_couple(request, **kwargs):
     try:
-        my_profile = UserProfile.objects.get(user__username=request.user)
-        couple = Couple.objects.get(id=kwargs["id"])
+        # do a sanity auth check before proceeding:
+        if request.user.auth_token.key:
+            my_profile = request.user.user
+            couple = Couple.objects.get(id=kwargs["id"])
 
-        # favourite or unfavourite:
-        if kwargs["favourited"] == "false":
-            _ = Fan.objects.create(
-                couple=couple,
-                fan=my_profile
-            )
-            my_profile.number_of_favourite_couples = my_profile.number_of_favourite_couples + 1
-            my_profile.save()
-            return Response({
-                "api_response": "Success",
-                "favourited": True
-            })
+            # favourite or unfavourite:
+            if kwargs["favourited"] == "false":
+                _ = Fan.objects.create(
+                    couple=couple,
+                    fan=my_profile
+                )
+                my_profile.number_of_favourite_couples = my_profile.number_of_favourite_couples + 1
+                my_profile.save()
+                return Response({
+                    "api_response": "Success",
+                    "favourited": True
+                })
         elif kwargs["favourited"] == "true":
             _ = Fan.objects.filter(
                 couple=couple,
@@ -50,10 +53,15 @@ def favourite_a_couple(request, **kwargs):
 def get_favourited_couples(request, **kwargs):
     try:
         favourited_couples = []
-        myprofile = UserProfile.objects.get(user=request.user)
 
-        # get my favourited couples:
-        my_fan_objects = Fan.objects.all(fan=myprofile.id)
+        # get my favourited couples, paginated:
+        pagination_object = PageNumberPagination()
+        pagination_object.page_size = 12
+        my_fan_objects = pagination_object.paginate_queryset(
+            Fan.objects.filter(fan=request.user.user.id),
+            request,
+        )
+
         for fan_object in my_fan_objects:
             couple = CoupleSerializer(
                 fan_object.couple,
@@ -68,6 +76,7 @@ def get_favourited_couples(request, **kwargs):
                 "api_response": "Success",
                 "favourited_couples": favourited_couples,
                 "number_of_favourited_couples": len(my_fan_objects),
+                "next_page_results": pagination_object.get_next_link()
             }
         )
     except Exception as e:
