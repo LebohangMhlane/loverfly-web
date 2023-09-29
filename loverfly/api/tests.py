@@ -80,6 +80,28 @@ class APISetupTests(TestCase):
             'Emma',
             'Felix',
             'Frank',
+            'Obi',
+            'Nica',
+            'Male',
+            'Female',
+            'Ash',
+            'Misty',
+            'Fury'
+            'Regina'
+            'Fox',
+            'Trot',
+            'Timmy',
+            'Tammy',
+            'Lisa',
+            'Scott',
+            'Emily',
+            'Tyler',
+            'Sakhile',
+            'Smangele',
+            'Blade',
+            'Rachel',
+            'Neo',
+            'Trinity',
         ]
         # create accounts for all the names above:
         for username in username_list:

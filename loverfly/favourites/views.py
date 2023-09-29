@@ -56,7 +56,7 @@ def get_favourited_couples(request, **kwargs):
 
         # get my favourited couples, paginated:
         pagination_object = PageNumberPagination()
-        pagination_object.page_size = 12
+        pagination_object.page_size = 10
         my_fan_objects = pagination_object.paginate_queryset(
             Fan.objects.filter(fan=request.user.user.id),
             request,
@@ -76,7 +76,7 @@ def get_favourited_couples(request, **kwargs):
                 "api_response": "Success",
                 "favourited_couples": favourited_couples,
                 "number_of_favourited_couples": len(my_fan_objects),
-                "next_page_results": pagination_object.get_next_link()
+                "next_page_link": pagination_object.get_next_link()
             }
         )
     except Exception as e:

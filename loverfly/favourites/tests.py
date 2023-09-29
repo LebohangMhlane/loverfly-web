@@ -14,7 +14,6 @@ class FavouritesTests(APISetupTests, TestCase):
         pass
 
     def test_get_favourited_couples(self):
-        
         # get my user profile:
         user_dict = self.main_user.data
         user_profile = UserProfile.objects.get(id=user_dict["id"])
@@ -34,5 +33,27 @@ class FavouritesTests(APISetupTests, TestCase):
             HTTP_AUTHORIZATION="Token " + self.login_response["token"],
         )
         self.assertEqual(response.data['api_response'], 'Success')
-        self.assertEqual(response.data['number_of_favourited_couples'], 12)
+        self.assertEqual(response.data['number_of_favourited_couples'], 10)
         self.assertEqual(response.data['favourited_couples'][0]["partner_one"]["username"], 'Moe')
+
+        # test pagination page 2:
+        next_page_link = response.data["next_page_link"]
+        response = self.client.get(
+            next_page_link,
+            HTTP_AUTHORIZATION="Token " + self.login_response["token"],
+        )
+        self.assertEqual(response.data['api_response'], 'Success')
+        self.assertEqual(response.data['number_of_favourited_couples'], 10)
+        self.assertEqual(response.data['favourited_couples'][0]["partner_one"]["username"], 'Felix')
+
+        # test pagination page 3:
+        next_page_link = response.data["next_page_link"]
+        response = self.client.get(
+            next_page_link,
+            HTTP_AUTHORIZATION="Token " + self.login_response["token"],
+        )
+        self.assertEqual(response.data['api_response'], 'Success')
+        self.assertEqual(response.data['number_of_favourited_couples'], 3)
+        self.assertEqual(response.data['favourited_couples'][0]["partner_one"]["username"], 'Neo')
+
+
