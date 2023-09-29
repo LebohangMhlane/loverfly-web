@@ -25,7 +25,7 @@ def get_posts_for_feed(request, **kwargs):
 
         # get my favourite couples (paginated):
         pagination_object = PageNumberPagination()
-        pagination_object.page_size = 2
+        pagination_object.page_size = 12
         paginated_fan_objects = pagination_object.paginate_queryset(
             Fan.objects.filter(fan__user=request.user).order_by("id"),
             request

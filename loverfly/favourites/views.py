@@ -29,17 +29,17 @@ def favourite_a_couple(request, **kwargs):
                     "api_response": "Success",
                     "favourited": True
                 })
-        elif kwargs["favourited"] == "true":
-            _ = Fan.objects.filter(
-                couple=couple,
-                fan=my_profile
-            ).first().delete()
-            my_profile.number_of_favourite_couples = my_profile.number_of_favourite_couples - 1
-            my_profile.save()
-            return Response({
-                "api_response": "Success",
-                "favourited": False
-            })
+            elif kwargs["favourited"] == "true":
+                _ = Fan.objects.filter(
+                    couple=couple,
+                    fan=my_profile
+                ).first().delete()
+                my_profile.number_of_favourite_couples = my_profile.number_of_favourite_couples - 1
+                my_profile.save()
+                return Response({
+                    "api_response": "Success",
+                    "favourited": False
+                })
     except Exception as e:
         return Response({
             "api_response": "failed",

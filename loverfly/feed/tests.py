@@ -19,4 +19,4 @@ class FeedTests(APISetupTests, TestCase):
         # test checks
         self.assertEqual(len(feed_page["posts"]), 1)
         self.assertEqual(feed_page["posts"][0]["couple"]
-                         ["partner_one"]["username"], "mikki")
+                         ["partner_one"]["username"], "Moe")

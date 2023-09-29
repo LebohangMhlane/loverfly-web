@@ -13,4 +13,5 @@ urlpatterns = [
     path("", include("posts.urls")),
     path("", include("accounts.urls")),
     path("api-token-auth/", views.obtain_auth_token, name="api-token-auth"),
+    path("", include("api.urls")),
 ]

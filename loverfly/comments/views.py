@@ -36,7 +36,7 @@ def get_comments(request, **kwargs):
     try:
         post_id = kwargs["post_id"]
         pagination_object = PageNumberPagination()
-        pagination_object.page_size = 12
+        pagination_object.page_size = 10
         results = pagination_object.paginate_queryset(
             Comment.objects.filter(post__id=post_id).order_by("id"),
             request,
@@ -50,9 +50,13 @@ def get_comments(request, **kwargs):
                 ).exists(),
                 "comment": comment,
             })
+        next_page_link = pagination_object.get_next_link()
+        max_page_size = pagination_object.max_page_size
         return Response({
             "api_response": "Success",
-            "comments": comments
+            "comments": comments,
+            "next_page_link": next_page_link,
+            "results_end_reached": False
         })
     except Exception as e:
         return Response({
