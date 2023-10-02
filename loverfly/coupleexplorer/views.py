@@ -5,7 +5,7 @@ from django.db.models import Q
 
 from couples.models import Couple
 from couples.serializers import CoupleSerializer
-from favourites.models import Admirer
+from admirers.models import Admirer
 from posts.models import Post
 
 @api_view(["GET"])

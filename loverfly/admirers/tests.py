@@ -3,7 +3,7 @@ from django.urls import reverse
 
 from api.tests import APISetupTests
 from couples.models import Couple
-from favourites.models import Admirer
+from admirers.models import Admirer
 from accounts.models import UserProfile
 
 # Create your tests here.

@@ -2,7 +2,7 @@
 from rest_framework import serializers
 
 from accounts.serializers import UserProfileSerializer
-from favourites.models import Admirer
+from admirers.models import Admirer
 
 class AdmirerSerializer(serializers.ModelSerializer):
     admirer = UserProfileSerializer()

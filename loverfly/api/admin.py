@@ -1,7 +1,7 @@
 from django.contrib import admin
 from comments.models import CommentLike, Comment
 from couples.models import Couple
-from favourites.models import Admirer
+from admirers.models import Admirer
 from likes.models import Liker
 from posts.models import Post
 

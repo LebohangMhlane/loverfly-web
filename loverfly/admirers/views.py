@@ -6,9 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 
 # from rest_framework.permissions import IsAdminUser, IsAuthenticated TODO: will activate later
 from couples.models import Couple
-from favourites.models import Admirer
+from admirers.models import Admirer
 from couples.serializers import CoupleSerializer
-from favourites.serializers import AdmirerSerializer
+from admirers.serializers import AdmirerSerializer
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

@@ -1,5 +1,5 @@
 from django.urls import path
-from favourites.views import (favourite_a_couple, 
+from admirers.views import (favourite_a_couple, 
                               get_favourited_couples, 
                               check_if_couple_favourited,
                               get_all_admirers)

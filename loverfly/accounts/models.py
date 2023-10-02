@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
-from favourites.models import Admirer
+from admirers.models import Admirer
 from likes.models import Liker
 
 

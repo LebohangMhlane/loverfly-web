@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 # from rest_framework.permissions import IsAdminUser, IsAuthenticated TODO: will activate later
 from couples.serializers import CoupleSerializer
 
-from favourites.models import Admirer
+from admirers.models import Admirer
 from likes.models import Liker
 from posts.models import Post
 from posts.serializers import PostSerializer
