@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "comments",
     "coupleexplorer",
     "couples",
-    "favourites",
+    "admirers",
     "feed",
     "likes",
     "posts",

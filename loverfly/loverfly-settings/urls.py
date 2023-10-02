@@ -7,7 +7,7 @@ urlpatterns = [
     path("", include("comments.urls")),
     path("", include("coupleexplorer.urls")),   
     path("", include("couples.urls")),
-    path("", include("favourites.urls")),
+    path("", include("admirers.urls")),
     path("", include("feed.urls")),
     path("", include("likes.urls")),
     path("", include("posts.urls")),
