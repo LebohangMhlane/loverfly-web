@@ -25,7 +25,7 @@ class UserProfile(models.Model):
     )
     account_linkage_code = models.CharField(
         max_length=5, unique=True, blank=True, null=True)
-    number_of_favourite_couples = models.PositiveBigIntegerField(default=0)
+    number_of_admired_couples = models.PositiveBigIntegerField(default=0)
     number_of_liked_posts = models.PositiveBigIntegerField(default=0)
 
     def __str__(self):
@@ -51,7 +51,7 @@ def set_couple_and_like_counts(instance, **kwargs):
     if instance.id:
         try:
             # set the numerical count of all the couples that i follow:
-            instance.number_of_favourite_couples = len(
+            instance.number_of_admired_couples = len(
                 Admirer.objects.filter(admirer=instance))
             instance.number_of_liked_posts = len(
                 Liker.objects.filter(liker=instance))

@@ -8,9 +8,9 @@ from accounts.models import UserProfile
 
 # Create your tests here.
 
-class FavouritesTests(APISetupTests, TestCase):
+class AdmirationTests(APISetupTests, TestCase):
 
-    def test_favourite_couple(self):
+    def test_admire_couple(self):
         pass
 
 
@@ -44,12 +44,12 @@ class FavouritesTests(APISetupTests, TestCase):
             )
 
 
-    def test_get_favourited_couples(self):
+    def test_get_admired_couples(self):
         # get my user profile:
         user_dict = self.main_user.data
         user_profile = UserProfile.objects.get(id=user_dict["id"])
 
-        # favourite all couples:
+        # admire all couples:
         couples = Couple.objects.all()
         for couple in couples:
             Admirer.objects.create(
@@ -57,15 +57,15 @@ class FavouritesTests(APISetupTests, TestCase):
                 admirer=user_profile
             )
         
-        # get the favourited couples and very a successful response:
-        url = reverse("get_favourited_couples")
+        # get the admired couples and verify a successful response:
+        url = reverse("get_admired_couples")
         response = self.client.get(
             url,
             HTTP_AUTHORIZATION="Token " + self.login_response["token"],
         )
         self.assertEqual(response.data['api_response'], 'Success')
-        self.assertEqual(response.data['number_of_favourited_couples'], 10)
-        self.assertEqual(response.data['favourited_couples'][0]["partner_one"]["username"], 'Moe')
+        self.assertEqual(response.data['number_of_admired_couples'], 10)
+        self.assertEqual(response.data['admired_couples'][0]["partner_one"]["username"], 'Moe')
 
         # test pagination page 2:
         next_page_link = response.data["next_page_link"]

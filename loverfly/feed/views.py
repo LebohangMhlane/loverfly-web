@@ -18,7 +18,7 @@ from posts.serializers import PostSerializer
 def get_posts_for_feed(request, **kwargs):
     try:
         """
-        returns one latest post for all favourited couples
+        returns one latest post for all admired couples
         to populate the home feed page
         """
         all_posts = {"posts": []}
@@ -31,7 +31,7 @@ def get_posts_for_feed(request, **kwargs):
             request
         )
 
-        # get the post for each favourited user and prepare the data:
+        # get the post for each admired user and prepare the data:
         for admirer_object in paginated_admirer_objects:
             if admirer_object.couple.has_posts:
                 couples_latest_post = Post.objects.filter(
@@ -51,16 +51,19 @@ def get_posts_for_feed(request, **kwargs):
         return Response(all_posts)
     except Exception as e:
         print(e)
-        return Response({"error": "error"})
+        return Response({
+            "error": "error",
+            "error_info": str(e)
+        })
 
 
 def prepare_post_data(post, current_user, couple):
     is_liked = Liker.objects.filter(
         post=post, liker__user=current_user).exists()
-    is_favourited = Admirer.objects.filter(admirer__user=current_user).exists()
+    is_admired = Admirer.objects.filter(admirer__user=current_user).exists()
     post_data = {
         "isLiked": is_liked,
-        "isFavourited": is_favourited,
+        "isAdmired": is_admired,
         "post": PostSerializer(post, many=False).data,
         "couple": CoupleSerializer(couple, many=False).data
     }

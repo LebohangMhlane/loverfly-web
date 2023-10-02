@@ -228,13 +228,13 @@ class APISetupTests(TestCase):
 
         # favourite this couple:
         favouriting_url = reverse(
-            "favourite", kwargs={"id": 1, "favourited": "false"})
+            "favourite", kwargs={"id": 1, "admired": "false"})
         feed_page = self.client.get(
             path=favouriting_url,
             follow=True,
             HTTP_AUTHORIZATION="Token " + self.login_response["token"],
         )
         feed_page = feed_page.json()
-        self.assertTrue(feed_page["favourited"])
+        self.assertTrue(feed_page["admired"])
 
         return super().setUp()

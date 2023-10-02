@@ -9,10 +9,11 @@ from couples.models import Couple
 from admirers.models import Admirer
 from couples.serializers import CoupleSerializer
 from admirers.serializers import AdmirerSerializer
+from accounts.models import UserProfile
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def favourite_a_couple(request, **kwargs):
+def admire_a_couple(request, **kwargs):
     try:
         # do a sanity auth check before proceeding:
         if request.user.auth_token.key:
@@ -20,43 +21,43 @@ def favourite_a_couple(request, **kwargs):
             couple = Couple.objects.get(id=kwargs["id"])
 
             # favourite or unfavourite:
-            if kwargs["favourited"] == "false":
+            if kwargs["admired"] == "false":
                 _ = Admirer.objects.create(
                     couple=couple,
                     admirer=my_profile
                 )
-                my_profile.number_of_favourite_couples = my_profile.number_of_favourite_couples + 1
+                my_profile.number_of_admired_couples = my_profile.number_of_admired_couples + 1
                 my_profile.save()
                 return Response({
                     "api_response": "Success",
-                    "favourited": True
+                    "admired": True
                 })
-            elif kwargs["favourited"] == "true":
+            elif kwargs["admired"] == "true":
                 _ = Admirer.objects.filter(
                     couple=couple,
                     admirer=my_profile
                 ).first().delete()
-                my_profile.number_of_favourite_couples = my_profile.number_of_favourite_couples - 1
+                my_profile.number_of_admired_couples = my_profile.number_of_admired_couples - 1
                 my_profile.save()
                 return Response({
                     "api_response": "Success",
-                    "favourited": False
+                    "admired": False
                 })
     except Exception as e:
         return Response({
             "api_response": "failed",
             "error_info": str(e),
-            "favourited": kwargs["favourited"]
+            "admired": kwargs["admired"]
         })
 
 
 @api_view(["GET"])
 @permission_classes([])
-def get_favourited_couples(request, **kwargs):
+def get_admired_couples(request, **kwargs):
     try:
         favourited_couples = []
 
-        # get my favourited couples, paginated:
+        # get my admired couples, paginated:
         pagination_object = PageNumberPagination()
         pagination_object.page_size = 10
         admirer = pagination_object.paginate_queryset(
@@ -69,10 +70,10 @@ def get_favourited_couples(request, **kwargs):
                 admirer_object.couple,
                 many=False)
 
-            # add this couple to the favourited couples list:
+            # add this couple to the admired couples list:
             favourited_couples.append(couple.data)
 
-        # return a dictionary containing favourited couple profiles and the count:
+        # return a dictionary containing admired couple profiles and the count:
         return Response(
             {
                 "api_response": "Success",
@@ -97,7 +98,7 @@ def get_all_admirers(request, **kwargs):
     try:
         # get all my admirers, paginate by 14:
         pagination_object = PageNumberPagination()
-        pagination_object.page_size = 20
+        pagination_object.page_size = 10
         my_couple = Couple.objects.filter(
             Q(partner_one__username=request.user.user.username) | 
               Q(partner_two__username=request.user.user.username)).first()
@@ -107,10 +108,11 @@ def get_all_admirers(request, **kwargs):
         )
         # prepare the admirers response data:
         serialized_admirers = AdmirerSerializer(my_admirers, many=True)
+        next_page_link = pagination_object.get_next_link()
         return Response(
             {"api_response": "success",
             "admirers": serialized_admirers.data,
-            "next_page_link": pagination_object.get_next_link()
+            "next_page_link": next_page_link
             }
     )
     except Exception as e:
@@ -122,17 +124,17 @@ def get_all_admirers(request, **kwargs):
 
 @api_view(["GET"])
 @permission_classes([])
-def check_if_couple_favourited(request, **kwargs):
+def check_if_couple_is_admired(request, **kwargs):
     try:
         couple_favourited = Admirer.objects.filter(couple__id=kwargs["couple_id"], admirer=request.user.user).exists()
         return Response({
             "api_response": "success",
-            "favourited": couple_favourited
+            "admired": couple_favourited
         })
     except Exception as e:
         return Response({
             "api_response": "failed",
             "error_info": str(e),
-            "favourited": False
+            "admired": False
         })
 

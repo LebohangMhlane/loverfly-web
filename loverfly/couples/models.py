@@ -4,6 +4,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
 from accounts.models import UserProfile
+from admirers.models import Admirer
 
 class Couple(models.Model):
     partner_one = models.OneToOneField(
@@ -43,3 +44,7 @@ def set_partner_data(instance, *args, **kwargs):
         instance.partner_two.my_partner = instance.partner_one
         instance.partner_one.save()
         instance.partner_two.save()
+
+@receiver(pre_save, sender=Couple)
+def update_admirer_counts(instance, *args, **kwargs):
+    instance.admirers = Admirer.objects.all().count()

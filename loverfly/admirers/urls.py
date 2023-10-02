@@ -1,18 +1,18 @@
 from django.urls import path
-from admirers.views import (favourite_a_couple, 
-                              get_favourited_couples, 
-                              check_if_couple_favourited,
+from admirers.views import (admire_a_couple, 
+                              get_admired_couples, 
+                              check_if_couple_is_admired,
                               get_all_admirers)
 
 urlpatterns = [
     path(
-        "favourite/<int:id>/<str:favourited>/",
-        favourite_a_couple,
+        "admire/<int:id>/<str:admired>/",
+        admire_a_couple,
         name="favourite",
     ),
     path(
-        "get-favourited-couples/",
-        get_favourited_couples,
+        "get-admired-couples/",
+        get_admired_couples,
         name="get_favourited_couples",
     ),
     path(
@@ -21,8 +21,8 @@ urlpatterns = [
         name="get_all_admirers",
     ),
     path(
-        "check-if-favourited/<int:couple_id>/",
-        check_if_couple_favourited,
+        "check-if-admired/<int:couple_id>/",
+        check_if_couple_is_admired,
         name="check_if_favourited",
     ),
 

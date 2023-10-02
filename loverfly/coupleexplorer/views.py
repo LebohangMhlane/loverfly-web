@@ -26,12 +26,12 @@ def get_trending_couples(request):
                 total_post_likes = total_post_likes + like_count["likes"]
 
             couple_data = {}
-            isFavourited = Admirer.objects.filter(admirer__user=request.user, couple=couple).exists()
+            isAdmired = Admirer.objects.filter(admirer__user=request.user, couple=couple).exists()
             serialized_couple = CoupleSerializer(couple, many=False)
 
             couple_data["total_post_likes"] = total_post_likes
             couple_data["couple"] = serialized_couple.data
-            couple_data["isFavourited"] = isFavourited
+            couple_data["isAdmired"] = isAdmired
             trending_couples.append(couple_data)
 
         trending_couples = sorted(
@@ -64,7 +64,7 @@ def get_all_couples(request):  # TODO: Will need to implement pagination:
         for couple in couples:
             couple_data = {}
 
-            # is the couple favourited:
+            # is the couple admired:
             is_favourited = False
             if Admirer.objects.filter(
                     admirer__user=request.user,
@@ -73,7 +73,7 @@ def get_all_couples(request):  # TODO: Will need to implement pagination:
 
             serialized_couple = CoupleSerializer(couple, many=False)
             couple_data["couple"] = serialized_couple.data
-            couple_data["isFavourited"] = is_favourited
+            couple_data["isAdmired"] = is_favourited
             all_couples.append(couple_data)
         return Response({
             "apiResponse": "Successful",
