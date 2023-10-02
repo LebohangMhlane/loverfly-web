@@ -51,7 +51,6 @@ def get_comments(request, **kwargs):
                 "comment": comment,
             })
         next_page_link = pagination_object.get_next_link()
-        max_page_size = pagination_object.max_page_size
         return Response({
             "api_response": "Success",
             "comments": comments,

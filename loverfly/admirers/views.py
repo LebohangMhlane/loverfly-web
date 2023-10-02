@@ -97,12 +97,12 @@ def get_all_admirers(request, **kwargs):
     try:
         # get all my admirers, paginate by 14:
         pagination_object = PageNumberPagination()
-        pagination_object.page_size = 14
+        pagination_object.page_size = 20
         my_couple = Couple.objects.filter(
             Q(partner_one__username=request.user.user.username) | 
               Q(partner_two__username=request.user.user.username)).first()
         my_admirers = pagination_object.paginate_queryset(
-            Admirer.objects.filter(couple=my_couple),
+            Admirer.objects.filter(couple=my_couple).order_by("id"),
             request,
         )
         # prepare the admirers response data:
