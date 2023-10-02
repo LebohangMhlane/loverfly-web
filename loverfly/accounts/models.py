@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 
-from favourites.models import Fan
+from favourites.models import Admirer
 from likes.models import Liker
 
 
@@ -52,7 +52,7 @@ def set_couple_and_like_counts(instance, **kwargs):
         try:
             # set the numerical count of all the couples that i follow:
             instance.number_of_favourite_couples = len(
-                Fan.objects.filter(fan=instance))
+                Admirer.objects.filter(admirer=instance))
             instance.number_of_liked_posts = len(
                 Liker.objects.filter(liker=instance))
         except:

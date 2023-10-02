@@ -5,7 +5,7 @@ from django.db.models import Q
 
 from couples.models import Couple
 from couples.serializers import CoupleSerializer
-from favourites.models import Fan
+from favourites.models import Admirer
 from posts.models import Post
 
 @api_view(["GET"])
@@ -26,7 +26,7 @@ def get_trending_couples(request):
                 total_post_likes = total_post_likes + like_count["likes"]
 
             couple_data = {}
-            isFavourited = Fan.objects.filter(fan__user=request.user, couple=couple).exists()
+            isFavourited = Admirer.objects.filter(admirer__user=request.user, couple=couple).exists()
             serialized_couple = CoupleSerializer(couple, many=False)
 
             couple_data["total_post_likes"] = total_post_likes
@@ -66,8 +66,8 @@ def get_all_couples(request):  # TODO: Will need to implement pagination:
 
             # is the couple favourited:
             is_favourited = False
-            if Fan.objects.filter(
-                    fan__user=request.user,
+            if Admirer.objects.filter(
+                    admirer__user=request.user,
                     couple=couple).exists():
                 is_favourited = True
 

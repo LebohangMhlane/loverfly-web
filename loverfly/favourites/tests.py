@@ -3,7 +3,7 @@ from django.urls import reverse
 
 from api.tests import APISetupTests
 from couples.models import Couple
-from favourites.models import Fan
+from favourites.models import Admirer
 from accounts.models import UserProfile
 
 # Create your tests here.
@@ -13,6 +13,37 @@ class FavouritesTests(APISetupTests, TestCase):
     def test_favourite_couple(self):
         pass
 
+
+    def test_get_my_admirers(self):
+        # get my user profile:
+        user_dict = self.main_user.data
+        user_profile = UserProfile.objects.get(id=user_dict["id"])
+        
+        # make all users admire my couple:
+        user_profiles = UserProfile.objects.all().exclude(username=user_profile.username)
+        my_couple = Couple.objects.filter(partner_one__username=user_profile.username).first()
+        for user_profile in user_profiles:
+            try:
+                Admirer.objects.create(admirer=user_profile, couple=my_couple)
+            except Exception as e:
+                pass
+        
+        # make the request:
+        url = reverse("get_all_admirers")
+        response = self.client.get(
+            url,
+            HTTP_AUTHORIZATION="Token " + self.login_response["token"],
+        )
+        self.assertEqual(response.data["api_response"], "success")
+        self.assertEqual(len(response.data["admirers"]), 14)
+        self.assertTrue(len(response.data["next_page_link"]) > 0)
+        # i should not be my own couple admirer:
+        for admirer in response.data["admirers"]:
+            self.assertFalse(
+                admirer["admirer"]["user"]["username"] == user_profile.username
+            )
+
+
     def test_get_favourited_couples(self):
         # get my user profile:
         user_dict = self.main_user.data
@@ -21,9 +52,9 @@ class FavouritesTests(APISetupTests, TestCase):
         # favourite all couples:
         couples = Couple.objects.all()
         for couple in couples:
-            Fan.objects.create(
+            Admirer.objects.create(
                 couple=couple,
-                fan=user_profile
+                admirer=user_profile
             )
         
         # get the favourited couples and very a successful response:

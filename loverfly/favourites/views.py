@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
@@ -5,8 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 
 # from rest_framework.permissions import IsAdminUser, IsAuthenticated TODO: will activate later
 from couples.models import Couple
-from favourites.models import Fan
+from favourites.models import Admirer
 from couples.serializers import CoupleSerializer
+from favourites.serializers import AdmirerSerializer
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -19,9 +21,9 @@ def favourite_a_couple(request, **kwargs):
 
             # favourite or unfavourite:
             if kwargs["favourited"] == "false":
-                _ = Fan.objects.create(
+                _ = Admirer.objects.create(
                     couple=couple,
-                    fan=my_profile
+                    admirer=my_profile
                 )
                 my_profile.number_of_favourite_couples = my_profile.number_of_favourite_couples + 1
                 my_profile.save()
@@ -30,9 +32,9 @@ def favourite_a_couple(request, **kwargs):
                     "favourited": True
                 })
             elif kwargs["favourited"] == "true":
-                _ = Fan.objects.filter(
+                _ = Admirer.objects.filter(
                     couple=couple,
-                    fan=my_profile
+                    admirer=my_profile
                 ).first().delete()
                 my_profile.number_of_favourite_couples = my_profile.number_of_favourite_couples - 1
                 my_profile.save()
@@ -57,14 +59,14 @@ def get_favourited_couples(request, **kwargs):
         # get my favourited couples, paginated:
         pagination_object = PageNumberPagination()
         pagination_object.page_size = 10
-        my_fan_objects = pagination_object.paginate_queryset(
-            Fan.objects.filter(fan=request.user.user.id),
+        admirer = pagination_object.paginate_queryset(
+            Admirer.objects.filter(admirer=request.user.user.id),
             request,
         )
 
-        for fan_object in my_fan_objects:
+        for admirer_object in admirer:
             couple = CoupleSerializer(
-                fan_object.couple,
+                admirer_object.couple,
                 many=False)
 
             # add this couple to the favourited couples list:
@@ -75,7 +77,7 @@ def get_favourited_couples(request, **kwargs):
             {
                 "api_response": "Success",
                 "favourited_couples": favourited_couples,
-                "number_of_favourited_couples": len(my_fan_objects),
+                "number_of_favourited_couples": len(admirer),
                 "next_page_link": pagination_object.get_next_link()
             }
         )
@@ -91,9 +93,38 @@ def get_favourited_couples(request, **kwargs):
 
 @api_view(["GET"])
 @permission_classes([])
+def get_all_admirers(request, **kwargs):
+    try:
+        # get all my admirers, paginate by 14:
+        pagination_object = PageNumberPagination()
+        pagination_object.page_size = 14
+        my_couple = Couple.objects.filter(
+            Q(partner_one__username=request.user.user.username) | 
+              Q(partner_two__username=request.user.user.username)).first()
+        my_admirers = pagination_object.paginate_queryset(
+            Admirer.objects.filter(couple=my_couple),
+            request,
+        )
+        # prepare the admirers response data:
+        serialized_admirers = AdmirerSerializer(my_admirers, many=True)
+        return Response(
+            {"api_response": "success",
+            "admirers": serialized_admirers.data,
+            "next_page_link": pagination_object.get_next_link()
+            }
+    )
+    except Exception as e:
+        return {"api_response": "failed",
+                "admirers": {},
+                "next_page_link": pagination_object.get_next_link()
+                }   
+
+
+@api_view(["GET"])
+@permission_classes([])
 def check_if_couple_favourited(request, **kwargs):
     try:
-        couple_favourited = Fan.objects.filter(couple__id=kwargs["couple_id"], fan=request.user.user).exists()
+        couple_favourited = Admirer.objects.filter(couple__id=kwargs["couple_id"], admirer=request.user.user).exists()
         return Response({
             "api_response": "success",
             "favourited": couple_favourited

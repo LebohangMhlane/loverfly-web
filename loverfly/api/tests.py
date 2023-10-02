@@ -117,7 +117,7 @@ class APISetupTests(TestCase):
                 partner_one = user_profiles[index_starter]
                 partner_two = user_profiles[user_profiles.index(partner_one) + index_skipper]
                 index_starter = index_starter + 2
-                Couple.objects.create(partner_one=partner_one, partner_two=partner_two)
+                couple = Couple.objects.create(partner_one=partner_one, partner_two=partner_two)
             else:
                 break
         # create a post for each couple:

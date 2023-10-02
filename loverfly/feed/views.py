@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 # from rest_framework.permissions import IsAdminUser, IsAuthenticated TODO: will activate later
 from couples.serializers import CoupleSerializer
 
-from favourites.models import Fan
+from favourites.models import Admirer
 from likes.models import Liker
 from posts.models import Post
 from posts.serializers import PostSerializer
@@ -26,22 +26,22 @@ def get_posts_for_feed(request, **kwargs):
         # get my favourite couples (paginated):
         pagination_object = PageNumberPagination()
         pagination_object.page_size = 5
-        paginated_fan_objects = pagination_object.paginate_queryset(
-            Fan.objects.filter(fan__user=request.user).order_by("id"),
+        paginated_admirer_objects = pagination_object.paginate_queryset(
+            Admirer.objects.filter(admirer__user=request.user).order_by("id"),
             request
         )
 
         # get the post for each favourited user and prepare the data:
-        for fan_object in paginated_fan_objects:
-            if fan_object.couple.has_posts:
+        for admirer_object in paginated_admirer_objects:
+            if admirer_object.couple.has_posts:
                 couples_latest_post = Post.objects.filter(
-                    couple=fan_object.couple, deleted=False
+                    couple=admirer_object.couple, deleted=False
                 ).latest()
                 if couples_latest_post:
                     post_data = prepare_post_data(
                         couples_latest_post,
                         request.user,
-                        fan_object.couple
+                        admirer_object.couple
                     )
                     all_posts["posts"].append(post_data)
 
@@ -57,7 +57,7 @@ def get_posts_for_feed(request, **kwargs):
 def prepare_post_data(post, current_user, couple):
     is_liked = Liker.objects.filter(
         post=post, liker__user=current_user).exists()
-    is_favourited = Fan.objects.filter(fan__user=current_user).exists()
+    is_favourited = Admirer.objects.filter(admirer__user=current_user).exists()
     post_data = {
         "isLiked": is_liked,
         "isFavourited": is_favourited,
