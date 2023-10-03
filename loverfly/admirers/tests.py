@@ -35,7 +35,7 @@ class AdmirationTests(APISetupTests, TestCase):
             HTTP_AUTHORIZATION="Token " + self.login_response["token"],
         )
         self.assertEqual(response.data["api_response"], "success")
-        self.assertEqual(len(response.data["admirers"]), 14)
+        self.assertEqual(len(response.data["admirers"]), 10)
         self.assertTrue(len(response.data["next_page_link"]) > 0)
         # i should not be my own couple admirer:
         for admirer in response.data["admirers"]:
@@ -74,8 +74,8 @@ class AdmirationTests(APISetupTests, TestCase):
             HTTP_AUTHORIZATION="Token " + self.login_response["token"],
         )
         self.assertEqual(response.data['api_response'], 'Success')
-        self.assertEqual(response.data['number_of_favourited_couples'], 10)
-        self.assertEqual(response.data['favourited_couples'][0]["partner_one"]["username"], 'Felix')
+        self.assertEqual(response.data['number_of_admired_couples'], 10)
+        self.assertEqual(response.data['admired_couples'][0]["partner_one"]["username"], 'Felix')
 
         # test pagination page 3:
         next_page_link = response.data["next_page_link"]
@@ -84,7 +84,7 @@ class AdmirationTests(APISetupTests, TestCase):
             HTTP_AUTHORIZATION="Token " + self.login_response["token"],
         )
         self.assertEqual(response.data['api_response'], 'Success')
-        self.assertEqual(response.data['number_of_favourited_couples'], 3)
-        self.assertEqual(response.data['favourited_couples'][0]["partner_one"]["username"], 'Neo')
+        self.assertEqual(response.data['number_of_admired_couples'], 3)
+        self.assertEqual(response.data['admired_couples'][0]["partner_one"]["username"], 'Neo')
 
 

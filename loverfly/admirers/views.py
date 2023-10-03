@@ -55,7 +55,7 @@ def admire_a_couple(request, **kwargs):
 @permission_classes([])
 def get_admired_couples(request, **kwargs):
     try:
-        favourited_couples = []
+        admired_couples = []
 
         # get my admired couples, paginated:
         pagination_object = PageNumberPagination()
@@ -71,14 +71,14 @@ def get_admired_couples(request, **kwargs):
                 many=False)
 
             # add this couple to the admired couples list:
-            favourited_couples.append(couple.data)
+            admired_couples.append(couple.data)
 
         # return a dictionary containing admired couple profiles and the count:
         return Response(
             {
                 "api_response": "Success",
-                "favourited_couples": favourited_couples,
-                "number_of_favourited_couples": len(admirer),
+                "admired_couples": admired_couples,
+                "number_of_admired_couples": len(admirer),
                 "next_page_link": pagination_object.get_next_link()
             }
         )
@@ -86,8 +86,8 @@ def get_admired_couples(request, **kwargs):
         return Response(
             {
                 "api_response": "Error",
-                "favourited_couples": {},
-                "number_of_favourited_couples": 0,
+                "admired_couples": {},
+                "number_of_admired_couples": 0,
             }
         )
 

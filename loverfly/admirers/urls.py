@@ -13,7 +13,7 @@ urlpatterns = [
     path(
         "get-admired-couples/",
         get_admired_couples,
-        name="get_favourited_couples",
+        name="get_admired_couples",
     ),
     path(
         "get-all-admirers/",

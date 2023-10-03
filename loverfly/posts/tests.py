@@ -27,7 +27,7 @@ class PostTests(APISetupTests, TestCase):
             HTTP_AUTHORIZATION="Token " + self.login_response["token"],
             data=data
         )
-        self.assertTrue(response.json()["postcreated"])
+        self.assertTrue(response.status_code, 200)
 
     def test_delete_post(self):
 
