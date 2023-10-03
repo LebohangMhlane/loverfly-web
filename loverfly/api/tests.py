@@ -126,7 +126,7 @@ class APISetupTests(TestCase):
             Post.objects.create(
                 couple=couple,
                 caption=str(couple.partner_one.username + ' + ' + couple.partner_two.username),
-                image="https://i.pinimg.com/originals/6c/7c/ce/6c7cce376c32532c7d503974d23a057f.jpg"
+                post_image="https://i.pinimg.com/originals/6c/7c/ce/6c7cce376c32532c7d503974d23a057f.jpg"
             )
             couple.has_posts = True
             couple.save()
@@ -190,7 +190,7 @@ class APISetupTests(TestCase):
         post = Post.objects.create(
             couple=self.couple_one,
             caption="Hello World Couple 1",
-            image="myimage.jpg",
+            post_image="myimage.jpg",
         )
         _ = Liker.objects.create(
             post=post, liker=UserProfile.objects.get(
@@ -216,7 +216,7 @@ class APISetupTests(TestCase):
         post = Post.objects.create(
             couple=self.couple_two,
             caption="Hello World Couple 2",
-            image="myimage.jpg",
+            post_image="myimage.jpg",
         )
         _ = Liker.objects.create(
             post=post, liker=UserProfile.objects.get(

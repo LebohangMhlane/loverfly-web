@@ -1,15 +1,25 @@
 from django.test import TestCase
+from django.db.models import Q
+from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import reverse
 from django.test import TestCase
 from django.urls import reverse
 from api.tests import APISetupTests
+import requests
 
+from couples.models import Couple
 
 class PostTests(APISetupTests, TestCase):
 
     def test_create_a_post(self):
+        url = "https://machohairstyles.com/wp-content/uploads/2020/05/Chris-Hemsworth-Haircut_02-767x1024.jpg"
+        response = requests.get(url)
+        couple = Couple.objects.filter(
+            Q(partner_one__id=self.main_user.data["id"]) | 
+            Q(partner_two__id=self.main_user.data["id"])).first()
         data = {
-            "image_url": "image_url",
+            'image_name': "test_image",
+            "image": SimpleUploadedFile("post-img-" + str(couple.id) + ".jpg", response.content),
             "caption": "caption"
         }
         response = self.client.post(

@@ -1,4 +1,6 @@
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from posts.views import create_a_post, delete_post, get_couple_posts, view_single_post
 
 urlpatterns = [
@@ -9,3 +11,6 @@ urlpatterns = [
     path("view-single-post/<int:post_id>/",
          view_single_post, name="view_single_post"),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

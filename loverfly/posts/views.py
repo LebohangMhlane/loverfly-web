@@ -2,6 +2,7 @@ import datetime
 from rest_framework.decorators import api_view, permission_classes
 from django.db.models import Q
 from rest_framework.response import Response
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from couples.models import Couple
 from feed.views import prepare_post_data
@@ -13,15 +14,15 @@ from accounts.models import UserProfile
 @permission_classes([])
 def create_a_post(request, **kwargs):
     try:
-        # determine the couple:
+        # get the couple:
         couple = Couple.objects.filter(Q(partner_one__user=request.user) | Q(
             partner_two__user=request.user)).first()
-
+        
         # create the post:
         Post.objects.create(
             couple=couple,
             caption=request.data["caption"],
-            image=request.data["image_url"],
+            post_image=request.data["image"],
         )
 
         couple.has_posts = True
