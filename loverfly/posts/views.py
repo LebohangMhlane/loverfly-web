@@ -30,7 +30,7 @@ def create_a_post(request, **kwargs):
     except Exception as e:
         print(e)
         return Response({"error": "Failed to create the post"})
-    return Response({"postcreated": True})
+    return Response(status=201)
 
 
 @api_view(["GET"])
