@@ -20,7 +20,7 @@ def sign_up(request):
         if user_serializer.is_valid(raise_exception=True):
             user_profile = user_serializer.create(validated_data=request.data)
             user_profile = UserProfileSerializer(user_profile, many=False)
-            return Response(user_profile.data)
+            return Response(user_profile.data, status=201)
     except Exception as e:
         return Response({"error": True, "error_msg": str(e)})
 
