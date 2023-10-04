@@ -8,6 +8,7 @@ from api.tests import APISetupTests
 import requests
 
 from couples.models import Couple
+from posts.models import Post
 
 class PostTests(APISetupTests, TestCase):
 
@@ -27,6 +28,7 @@ class PostTests(APISetupTests, TestCase):
             HTTP_AUTHORIZATION="Token " + self.login_response["token"],
             data=data
         )
+        post = Post.objects.all().first()
         self.assertTrue(response.status_code, 200)
 
     def test_delete_post(self):

@@ -17,14 +17,12 @@ def create_a_post(request, **kwargs):
         # get the couple:
         couple = Couple.objects.filter(Q(partner_one__user=request.user) | Q(
             partner_two__user=request.user)).first()
-        
         # create the post:
         Post.objects.create(
             couple=couple,
             caption=request.data["caption"],
             post_image=request.data["image"],
         )
-
         couple.has_posts = True
         couple.save()
     except Exception as e:
