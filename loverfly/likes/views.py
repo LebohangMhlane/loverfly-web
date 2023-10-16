@@ -15,6 +15,7 @@ def like_a_post(request, **kwargs):
         if kwargs["post_liked"] == "true":
             _ = Liker.objects.filter(
                 liker=my_profile, post=post).first().delete()
+            post.save()
             post_liked = False
         elif kwargs["post_liked"] == "false":
             if not Liker.objects.filter(
@@ -23,6 +24,7 @@ def like_a_post(request, **kwargs):
                     liker=my_profile,
                     post=post,
                 )
+                post.save()
                 post_liked = True
             else:
                 post_liked = True

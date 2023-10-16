@@ -1,6 +1,9 @@
 import django
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
 from couples.models import Couple
+from loverfly.likes.models import Liker
 
 # Create your models here.
 
@@ -23,4 +26,8 @@ class Post(models.Model):
     def __str__(self):
         return str(self.couple) + " - " + str(self.caption)
     
-
+@receiver(pre_save, sender=Post)
+def update_likes(instance, **kwargs):
+    if instance.id:
+        number_of_likes = Liker.objects.filter(post=instance).count()
+        instance.likes = number_of_likes

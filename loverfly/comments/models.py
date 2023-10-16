@@ -1,12 +1,11 @@
 from django.db import models
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 from posts.models import Post
 
 # Create your models here.
-
 
 class Comment(models.Model):
     owner = models.ForeignKey(
@@ -20,6 +19,12 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.owner.username
+    
+@receiver(pre_save, sender=Comment)
+def update_comment_likes(instance, **kwargs):
+    if instance.id:
+        comment_like_count = CommentLike.objects.filter(comment=instance).count()
+        instance.comment_likes = comment_like_count
 
 
 class CommentLike(models.Model):

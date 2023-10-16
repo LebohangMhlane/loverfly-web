@@ -72,21 +72,18 @@ def like_comment(request, **kwargs):
         comment_data = request.data
         comment = Comment.objects.get(id=comment_data["comment_id"])
         if comment_data["comment_liked"] == "false":
-            comment_like = CommentLike.objects.create(
+            CommentLike.objects.create(
                 owner=request.user.user,
                 comment=comment
             )
-            if comment_like:
-                comment.comment_likes += 1
-                comment.save()
-                return Response({
-                    "api_response": "success",
-                    "comment_liked": True
-                })
+            comment.save()
+            return Response({
+                "api_response": "success",
+                "comment_liked": True
+            })
         else:
             CommentLike.objects.get(
                 comment=comment, owner=request.user.user).delete()
-            comment.comment_likes -= 1
             comment.save()
             return Response({
                 "api_response": "success",
