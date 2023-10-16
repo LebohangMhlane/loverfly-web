@@ -3,7 +3,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
 from couples.models import Couple
-from loverfly.likes.models import Liker
+from likes.models import Liker
 
 # Create your models here.
 
