@@ -7,6 +7,7 @@ from admirers.models import Admirer
 from likes.models import Liker
 
 
+
 class UserProfile(models.Model):
     is_active = models.BooleanField(default=True)
     is_straight = models.BooleanField(default=True)
@@ -15,7 +16,7 @@ class UserProfile(models.Model):
     )
     username = models.CharField(max_length=25, unique=True)
     email = models.EmailField(null=True, blank=True)
-    profile_picture = models.CharField(max_length=500, null=True, blank=True)
+    profile_picture = models.OneToOneField(to="ProfilePicture", blank=False, null=True, on_delete=models.CASCADE)
     my_partner = models.OneToOneField(
         to="self",
         blank=True,
@@ -57,3 +58,13 @@ def set_couple_and_like_counts(instance, **kwargs):
                 Liker.objects.filter(liker=instance))
         except:
             print("Error in: set_couple_and_like_counts")
+
+
+
+    
+def set_profile_picture_location(profile_picture, filename):
+    return f"profile_pictures/{profile_picture.user_profile.id}"
+class ProfilePicture(models.Model):
+    user_profile = models.OneToOneField(to=UserProfile, blank=True, null=True, on_delete=models.CASCADE)
+    image = models.FileField(upload_to=set_profile_picture_location, blank=False, null=True)
+

@@ -8,7 +8,7 @@ from likes.models import Liker
 # Create your models here.
 
 def post_image_location(post, filename):
-    return f"couple-id-{post.couple.id}/{filename}"
+    return f"couple_posts/couple-id-{post.couple.id}/{filename}"
 
 class Post(models.Model):
     class Meta:
