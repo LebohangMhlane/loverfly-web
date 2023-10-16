@@ -24,10 +24,16 @@ class UserSerializer(serializers.ModelSerializer):
 
         return user_profile
 
+class ProfilePictureSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProfilePicture
+        fields = ["image"]
+        depth = 1
 
 class UserProfileSerializer(serializers.ModelSerializer):
 
     user = UserSerializer()
+    profile_picture = ProfilePictureSerializer()
 
     class Meta:
         model = UserProfile
@@ -36,8 +42,3 @@ class UserProfileSerializer(serializers.ModelSerializer):
         depth = 1
 
 
-class ProfilePictureSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProfilePicture
-        fields = ["image"]
-        depth = 1

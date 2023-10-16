@@ -46,20 +46,15 @@ def create_user_profile(instance, **kwargs):
         print(
             f"An error occured during signal function : create_user_profile : {str(e)}")
 
-
 @receiver(pre_save, sender=UserProfile)
 def set_couple_and_like_counts(instance, **kwargs):
     if instance.id:
         try:
             # set the numerical count of all the couples that i follow:
-            instance.number_of_admired_couples = len(
-                Admirer.objects.filter(admirer=instance))
-            instance.number_of_liked_posts = len(
-                Liker.objects.filter(liker=instance))
+            instance.number_of_admired_couples = Admirer.objects.filter(admirer=instance).count()
+            instance.number_of_liked_posts = Liker.objects.filter(liker=instance).count()
         except:
             print("Error in: set_couple_and_like_counts")
-
-
 
     
 def set_profile_picture_location(profile_picture, filename):
@@ -67,4 +62,15 @@ def set_profile_picture_location(profile_picture, filename):
 class ProfilePicture(models.Model):
     user_profile = models.OneToOneField(to=UserProfile, blank=True, null=True, on_delete=models.CASCADE)
     image = models.FileField(upload_to=set_profile_picture_location, blank=False, null=True)
+
+    def __str__(self) -> str:
+        return f"{self.user_profile.id} - {self.user_profile.username}"
+
+@receiver(post_save, sender=ProfilePicture)
+def set_profile_picture_on_profile(instance, **kwargs):
+    try:
+        instance.user_profile.profile_picture = instance
+        instance.user_profile.save()
+    except:
+        pass
 
