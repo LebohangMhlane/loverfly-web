@@ -28,6 +28,7 @@ def admire_a_couple(request, **kwargs):
                 )
                 my_profile.number_of_admired_couples = my_profile.number_of_admired_couples + 1
                 my_profile.save()
+                couple.save()
                 return Response({
                     "api_response": "Success",
                     "admired": True
@@ -39,6 +40,7 @@ def admire_a_couple(request, **kwargs):
                 ).first().delete()
                 my_profile.number_of_admired_couples = my_profile.number_of_admired_couples - 1
                 my_profile.save()
+                couple.save()
                 return Response({
                     "api_response": "Success",
                     "admired": False
