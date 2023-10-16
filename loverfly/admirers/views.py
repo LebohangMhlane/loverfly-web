@@ -22,17 +22,26 @@ def admire_a_couple(request, **kwargs):
 
             # favourite or unfavourite:
             if kwargs["admired"] == "false":
-                _ = Admirer.objects.create(
+                if not Admirer.objects.filter(
                     couple=couple,
                     admirer=my_profile
-                )
-                my_profile.number_of_admired_couples = my_profile.number_of_admired_couples + 1
-                my_profile.save()
-                couple.save()
-                return Response({
-                    "api_response": "Success",
-                    "admired": True
-                })
+                ).exists():
+                    _ = Admirer.objects.create(
+                        couple=couple,
+                        admirer=my_profile
+                    )
+                    my_profile.number_of_admired_couples = my_profile.number_of_admired_couples + 1
+                    my_profile.save()
+                    couple.save()
+                    return Response({
+                        "api_response": "Success",
+                        "admired": True
+                    })
+                else:
+                    return Response({
+                        "api_response": "Success",
+                        "admired": True
+                    })
             elif kwargs["admired"] == "true":
                 _ = Admirer.objects.filter(
                     couple=couple,

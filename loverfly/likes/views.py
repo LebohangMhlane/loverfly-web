@@ -17,11 +17,15 @@ def like_a_post(request, **kwargs):
                 liker=my_profile, post=post).first().delete()
             post_liked = False
         elif kwargs["post_liked"] == "false":
-            _ = Liker.objects.create(
-                liker=my_profile,
-                post=post,
-            )
-            post_liked = True
+            if not Liker.objects.filter(
+                liker=my_profile, post=post).exists():
+                _ = Liker.objects.create(
+                    liker=my_profile,
+                    post=post,
+                )
+                post_liked = True
+            else:
+                post_liked = True
         return Response({
             "api_response": 'Success',
             "post_liked": post_liked
