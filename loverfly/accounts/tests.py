@@ -1,7 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
+import requests
 
-from accounts.models import UserProfile
+from accounts.models import ProfilePicture, UserProfile
 from api.tests import APISetupTests
 
 
@@ -66,12 +68,27 @@ class AccountsTest(APISetupTests, TestCase):
 
     def test_get_api_token_and_user_profile(self):
 
-        # get an api token
+        # get an api token:
         response = self.client.post(
             self.LOCAL_HOST + reverse("api-token-auth"),
             data={"username": "mikki", "password": "HelloWorld1!"},
         )
 
-        # was the user logged in successfully
+        # was the user logged in successfully:
         self.assertTrue(response.status_code == 200)
         self.assertContains(response, "token")
+
+    def test_update_profile_picture(self):
+        url = "https://machohairstyles.com/wp-content/uploads/2020/05/Chris-Hemsworth-Haircut_02-767x1024.jpg"
+        response = requests.get(url)
+        data = {
+            "image": SimpleUploadedFile("profilepicture.jpg", response.content),
+        }
+        response = self.client.post(
+            self.LOCAL_HOST + reverse("update_profile_picture"),
+            HTTP_AUTHORIZATION="Token " + self.login_response["token"],
+            data=data
+        )
+        profile_picture = ProfilePicture.objects.all().first()
+        self.assertEqual(profile_picture.image.name, "profile_pictures/41")
+        self.assertTrue(response.status_code, 200)

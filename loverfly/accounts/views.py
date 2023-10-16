@@ -8,8 +8,8 @@ from django.contrib.auth.models import User
 
 from couples.models import Couple
 from couples.serializers import CoupleSerializer
-from .models import UserProfile
-from .serializers import UserProfileSerializer, UserSerializer
+from .models import ProfilePicture, UserProfile
+from .serializers import ProfilePictureSerializer, UserProfileSerializer, UserSerializer
 
 
 @api_view(["POST"])
@@ -55,3 +55,33 @@ def get_user_profile_and_couple_data(request, **kwargs):
         "user_profile": profile_serialized.data,
         "couple": {},
     })
+
+
+@api_view(["POST"])
+@permission_classes([])
+def update_profile_picture(request, **kwargs):
+    try:
+        # there should be one already created:
+        profile_picture = ProfilePicture.objects.filter(user_profile=request.user.user)
+        if profile_picture:
+            profile_picture = profile_picture.first()
+            profile_picture.image = request.data["image"]
+            profile_picture.save()
+            serialized = ProfilePictureSerializer(profile_picture, many=False)
+            return Response({
+                "profile_picture": serialized.data,
+            })
+        else:
+            profile_picture = ProfilePicture()
+            profile_picture.user_profile = request.user.user
+            profile_picture.image = request.data["image"]
+            profile_picture.save()
+            serialized = ProfilePictureSerializer(profile_picture, many=False)
+            return Response({
+                "profile_picture": serialized.data,
+            })
+    except Exception as e:
+        return Response({
+            "error": "something went wrong",
+            "error_info": str(e)
+        })
