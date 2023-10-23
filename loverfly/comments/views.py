@@ -72,7 +72,7 @@ def like_comment(request, **kwargs):
         comment_data = request.data
         comment = Comment.objects.get(id=comment_data["comment_id"])
         if comment_data["comment_liked"] == "false":
-            if not CommentLike.objects.filter(owner=request.user.user).exists():
+            if not CommentLike.objects.filter(owner=request.user.user, comment=comment.id).exists():
                 CommentLike.objects.create(
                     owner=request.user.user,
                     comment=comment
