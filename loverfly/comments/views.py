@@ -3,8 +3,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 
-from comments.models import Comment, CommentLike
-from comments.serializers import CommentSerializer
+from comments.models import Comment, CommentLike, CommentReply
+from comments.serializers import CommentReplySerializer, CommentSerializer
 from posts.models import Post
 from accounts.models import UserProfile
 
@@ -100,6 +100,54 @@ def like_comment(request, **kwargs):
             "api_response": "failed",
             "error_info": str(e),
         })
+
+
+@api_view(["GET"])
+@permission_classes([])
+def get_comment_replies(request, **kwargs):
+    try:
+        replies = CommentReply.objects.filter(comment_replied_to__id=kwargs["comment_id"])
+        comment_replies_serialized = CommentReplySerializer(replies, many=True)
+        return Response({
+            "api_response": "success",
+            "comment_replies": comment_replies_serialized.data
+        })
+    except Exception as e:
+        return Response({
+            "api_response": "failed",
+            "error_info": str(e),
+        })
+
+
+@api_view(["POST"])
+@permission_classes([])
+def reply_to_comment(request, **kwargs):
+    try:
+        my_profile = request.user.user
+        comment_data = request.data
+        comment = Comment.objects.filter(id=int(comment_data["comment_id"])).first()
+
+        if comment:
+            comment_reply = CommentReply()
+            comment_reply.comment_replied_to = comment
+            comment_reply.replier = my_profile
+            comment_reply.comment_reply = comment_data["reply"]
+            comment_reply.save()
+
+            comment_reply_serialized = CommentReplySerializer(comment_reply, many=False)
+        return Response({
+            "api_response": "success",
+            "comment_reply": comment_reply_serialized.data,
+        })
+    except Exception as e:
+        return Response({
+            "api_response": "failed",
+            "error_info": str(e)
+        })
+
+
+
+
 
 
 @api_view(["POST"])

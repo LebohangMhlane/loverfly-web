@@ -46,6 +46,9 @@ class CommentReply(models.Model):
     replier = models.ForeignKey(to=UserProfile, on_delete=models.CASCADE)
     comment_reply = models.CharField(max_length=50, blank=False, null=True)
 
+    def __str__(self) -> str:
+        return f"{self.replier.username} to {self.comment_replied_to.post.couple}"
+
 
 class CommentReplyLike(models.Model):
     comment_reply = models.ForeignKey(to=CommentReply, on_delete=models.CASCADE)
