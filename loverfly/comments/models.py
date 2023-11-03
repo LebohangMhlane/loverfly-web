@@ -4,6 +4,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
 from posts.models import Post
+from accounts.models import UserProfile
 
 # Create your models here.
 
@@ -20,6 +21,7 @@ class Comment(models.Model):
     def __str__(self):
         return self.owner.username
     
+
 @receiver(pre_save, sender=Comment)
 def update_comment_likes(instance, **kwargs):
     if instance.id:
@@ -36,3 +38,18 @@ class CommentLike(models.Model):
 
     def __str__(self):
         return self.owner.username + " - " + str(self.comment.id)
+
+
+class CommentReply(models.Model):
+    comment_replied_to = models.ForeignKey(to=Comment, blank=False, null=True, on_delete=models.CASCADE)
+    deleted = models.BooleanField(default=False)
+    replier = models.ForeignKey(to=UserProfile, on_delete=models.CASCADE)
+    comment_reply = models.CharField(max_length=50, blank=False, null=True)
+
+
+class CommentReplyLike(models.Model):
+    comment_reply = models.ForeignKey(to=CommentReply, on_delete=models.CASCADE)
+    liker = models.ForeignKey(to=UserProfile, on_delete=models.CASCADE)
+
+
+    
