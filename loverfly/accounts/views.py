@@ -1,5 +1,6 @@
 
 from rest_framework.response import Response
+from rest_framework import serializers
 from rest_framework.decorators import api_view, permission_classes
 
 # from rest_framework.permissions import IsAdminUser, IsAuthenticated TODO: will activate later
@@ -21,8 +22,8 @@ def sign_up(request):
             user_profile = user_serializer.create(validated_data=request.data)
             user_profile = UserProfileSerializer(user_profile, many=False)
             return Response(user_profile.data, status=201)
-    except Exception as e:
-        return Response({"error": True, "error_msg": str(e)})
+    except serializers.ValidationError as e:
+        return Response({"error": True, "error_msg": str(e.detail["username"][0])})
 
 
 @api_view(["GET"])
