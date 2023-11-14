@@ -12,6 +12,7 @@ from admirers.models import Admirer
 from likes.models import Liker
 from posts.models import Post
 from posts.serializers import PostSerializer
+from comments.models import Comment
 
 # Create your views here.
 
@@ -82,6 +83,7 @@ def prepare_post_data(post, current_user, couple, is_my_post):
             "isAdmired": is_admired,
             "post": PostSerializer(post, many=False).data,
             "couple": CoupleSerializer(couple, many=False).data,
+            "comments_count": Comment.objects.filter(post=post).count(),
             "is_my_post": False
         }
         return post_data
@@ -91,6 +93,7 @@ def prepare_post_data(post, current_user, couple, is_my_post):
             "isAdmired": True,
             "post": PostSerializer(post, many=False).data,
             "couple": CoupleSerializer(couple, many=False).data,
+            "comments_count": Comment.objects.filter(post=post).count(),
             "is_my_post": True
         }
         return post_data
