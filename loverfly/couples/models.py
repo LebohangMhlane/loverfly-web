@@ -37,6 +37,7 @@ class Couple(models.Model):
     def get_last_anniversary(self):
         return self.last_anniversary.date
 
+# TODO: come back to this later. it may not be needed:
 @receiver(pre_save, sender=Couple)
 def set_partner_data(instance, *args, **kwargs):
     if not instance.partner_one.my_partner or not instance.partner_two.my_partner:
@@ -47,4 +48,4 @@ def set_partner_data(instance, *args, **kwargs):
 
 @receiver(pre_save, sender=Couple)
 def update_admirer_counts(instance, *args, **kwargs):
-    instance.admirers = Admirer.objects.all().count()
+    instance.admirers = Admirer.objects.filter(couple=instance).count()
