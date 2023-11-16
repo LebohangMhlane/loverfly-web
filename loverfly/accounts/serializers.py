@@ -28,7 +28,7 @@ class ProfilePictureSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfilePicture
         fields = ["image"]
-        depth = 1
+        depth = 2
 
 class UserProfileSerializer(serializers.ModelSerializer):
 
@@ -39,6 +39,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = UserProfile
         fields = "__all__"
         # enables self serialization of fields that relate to itself (Very useful)
-        depth = 1
+        depth = 2
 
 
