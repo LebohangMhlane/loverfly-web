@@ -26,7 +26,6 @@ def create_a_post(request, **kwargs):
         couple.has_posts = True
         couple.save()
     except Exception as e:
-        print(e)
         return Response({"error": "Failed to create the post"})
     return Response(status=201)
 

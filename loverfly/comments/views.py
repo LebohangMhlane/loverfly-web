@@ -148,7 +148,7 @@ def reply_to_comment(request, **kwargs):
             comment_reply = CommentReply()
             comment_reply.comment_replied_to = comment
             comment_reply.replier = my_profile
-            comment_reply.comment_reply = comment_data["comment"]
+            comment_reply.comment_reply = comment_data["reply"]
             comment_reply.save()
             comment_reply_serialized = CommentReplySerializer(comment_reply, many=False)
         return Response({
