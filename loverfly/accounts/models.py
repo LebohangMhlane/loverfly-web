@@ -6,8 +6,6 @@ from django.dispatch import receiver
 from admirers.models import Admirer
 from likes.models import Liker
 
-
-
 class UserProfile(models.Model):
     is_active = models.BooleanField(default=True)
     is_straight = models.BooleanField(default=True)
