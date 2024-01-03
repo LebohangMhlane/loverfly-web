@@ -6,7 +6,6 @@ from django.test import TestCase
 from django.urls import reverse
 from api.tests import APISetupTests
 import requests
-
 from couples.models import Couple
 from posts.models import Post
 
@@ -32,30 +31,25 @@ class PostTests(APISetupTests, TestCase):
         self.assertTrue(response.status_code, 200)
 
     def test_delete_post(self):
-
         # sign in as mikki:
         self.login_response = self.client.post(
             self.LOCAL_HOST + reverse("api-token-auth"),
             data={"username": "mikki", "password": "HelloWorld1!"},
-        )
-        self.login_response = self.login_response.json()
+        ).json()
 
         # get the posts mikki's couple has created:
-        url = reverse("get_couple_posts", kwargs={
-                      "couple_id": self.couple_one.id})
+        url = reverse("get_couple_posts", kwargs={"couple_id": self.couple_one.id})
         response = self.client.get(
             self.LOCAL_HOST + url,
-            HTTP_AUTHORIZATION="Token " + self.login_response["token"],
-        )
+            HTTP_AUTHORIZATION="Token " + self.login_response["token"],).json()
 
         # set the post to deleted state:
-        url = reverse("delete_post", kwargs={
-                      "post_id": response.json()["couple_posts"][0]["id"]})
+        url = reverse("delete_post", kwargs={"post_id": response["couple_posts"][0]["id"]})
         response = self.client.post(
             self.LOCAL_HOST + url,
             HTTP_AUTHORIZATION="Token " + self.login_response["token"],
-        )
-        self.assertTrue(response.json()["post_deleted"])
+        ).json()
+        self.assertTrue(response["post_deleted"])
 
     def test_get_couple_posts(self):
 
@@ -63,8 +57,7 @@ class PostTests(APISetupTests, TestCase):
         self.login_response = self.client.post(
             self.LOCAL_HOST + reverse("api-token-auth"),
             data={"username": "mikki", "password": "HelloWorld1!"},
-        )
-        self.login_response = self.login_response.json()
+        ).json()
 
         # get the posts mikki's couple has created:
         url = reverse("get_couple_posts", kwargs={
@@ -72,8 +65,8 @@ class PostTests(APISetupTests, TestCase):
         response = self.client.get(
             self.LOCAL_HOST + url,
             HTTP_AUTHORIZATION="Token " + self.login_response["token"],
-        )
-        post_length = len(response.json()["couple_posts"])
+        ).json()
+        post_length = len(response["couple_posts"])
         self.assertTrue(post_length, 1)
 
     def test_view_single_post(self):
