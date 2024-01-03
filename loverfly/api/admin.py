@@ -5,7 +5,7 @@ from admirers.models import Admirer
 from likes.models import Liker
 from posts.models import Post
 
-from accounts.models import ProfilePicture, UserProfile
+from accounts.models import ProfilePicture, UserProfile, UserSetting
 
 admin.site.register(UserProfile)
 admin.site.register(Post)
@@ -17,6 +17,8 @@ admin.site.register(CommentLike)
 admin.site.register(CommentReply)
 admin.site.register(CommentReplyLike)
 admin.site.register(ProfilePicture)
+admin.site.register(UserSetting())
+
 
 
 
