@@ -6,7 +6,6 @@ import requests
 from accounts.models import ProfilePicture, UserProfile
 from api.tests import APISetupTests
 
-
 class AccountsTest(APISetupTests, TestCase):
 
     def test_sign_up(self):
@@ -92,3 +91,11 @@ class AccountsTest(APISetupTests, TestCase):
         profile_picture = ProfilePicture.objects.all().first()
         self.assertEqual(profile_picture.image.name, "profile_pictures/41")
         self.assertTrue(response.status_code, 200)
+
+    def test_update_user_settings(self):
+        url = self.LOCAL_HOST + reverse("update_user_settings")
+        response = self.client.post(
+            url, data={"test": "data"},
+            HTTP_AUTHORIZATION="Token " + self.login_response["token"],
+        )
+        pass

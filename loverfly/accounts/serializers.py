@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
-from accounts.models import ProfilePicture, UserProfile
+from accounts.models import ProfilePicture, UserProfile, UserSetting
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -13,7 +13,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "username", "email", "password"]
 
     def create(self, validated_data):
-
         # create the user object:
         user = User.objects.create(
             username=validated_data["username"],
@@ -21,7 +20,9 @@ class UserSerializer(serializers.ModelSerializer):
             password=make_password(validated_data["password"]),
         )
         user_profile = UserProfile.objects.get(user=user)
-
+        user_settings = UserSetting.objects.create(
+            user_profile=user_profile
+        )
         return user_profile
 
 class ProfilePictureSerializer(serializers.ModelSerializer):
@@ -42,3 +43,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
         depth = 2
 
 
+class UserSettingSerializer(serializers.ModelSerializer):
+    user_profile = UserProfileSerializer()
+
+    class Meta:
+        model = UserSetting()
+        fields = "__all__"
+        depth = 2

@@ -30,7 +30,6 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.username
 
-
 @receiver(post_save, sender=User)
 def create_user_profile(instance, **kwargs):
     try:
@@ -54,7 +53,6 @@ def set_couple_and_like_counts(instance, **kwargs):
         except:
             print("Error in: set_couple_and_like_counts")
 
-    
 def set_profile_picture_location(profile_picture, filename):
     return f"profile_pictures/{profile_picture.user_profile.id}"
 class ProfilePicture(models.Model):
@@ -72,3 +70,11 @@ def set_profile_picture_on_profile(instance, **kwargs):
     except:
         pass
 
+class UserSetting(models.Model):
+
+    user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
+    dark_mode_on = models.BooleanField(default=False)
+    hide_posts = models.BooleanField(default=False)
+
+    def set_dark_mode(self, value:bool):
+        self.dark_mode_on = value

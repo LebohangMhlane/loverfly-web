@@ -9,8 +9,8 @@ from django.contrib.auth.models import User
 
 from couples.models import Couple
 from couples.serializers import CoupleSerializer
-from .models import ProfilePicture, UserProfile
-from .serializers import ProfilePictureSerializer, UserProfileSerializer, UserSerializer
+from .models import ProfilePicture, UserProfile, UserSetting
+from .serializers import ProfilePictureSerializer, UserProfileSerializer, UserSerializer, UserSettingSerializer
 
 
 @api_view(["POST"])
@@ -84,5 +84,31 @@ def update_profile_picture(request, **kwargs):
     except Exception as e:
         return Response({
             "error": "something went wrong",
+            "error_info": str(e)
+        })
+    
+
+@api_view(["POST"])
+@permission_classes([])
+def update_user_settings(request, **kwargs):
+    try:
+        user_profile = request.user.user
+        user_settings = UserSetting.objects.filter(user_profile=user_profile)
+        if user_settings:
+            # do something:
+            pass
+        else:
+            # do something with the settings:
+            user_settings = UserSetting()
+            user_settings.user_profile = user_profile
+            user_settings.save()
+            serialized_user_settings = UserSettingSerializer(user_settings, many=False)
+            return Response({
+                "api_response": "successful",
+                "user_settings": serialized_user_settings.data,
+            })
+    except Exception as e:
+        return Response({
+            "api_response": "error",
             "error_info": str(e)
         })
