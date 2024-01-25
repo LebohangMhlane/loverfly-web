@@ -95,8 +95,11 @@ def update_user_settings(request, **kwargs):
         user_profile = request.user.user
         user_settings = UserSetting.objects.filter(user_profile=user_profile)
         if user_settings:
-            # do something:
-            pass
+            serialized_user_settings = UserSettingSerializer(user_settings, many=False)
+            return Response({
+                "api_response": "successful",
+                "user_settings": serialized_user_settings.data,
+            })
         else:
             # do something with the settings:
             user_settings = UserSetting()

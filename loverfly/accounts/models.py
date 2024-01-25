@@ -40,7 +40,7 @@ def create_user_profile(instance, **kwargs):
             email=instance.email,
         )
         # once a user profile is created create a profile picture instance for it:
-        ProfilePicture.create(user_profile=user_profile)
+        ProfilePicture.objects.create(user_profile=user_profile)
     except Exception as e:
         print(
             f"An error occured during signal function : create_user_profile : {str(e)}")
