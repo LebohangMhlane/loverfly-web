@@ -28,7 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ProfilePictureSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfilePicture
-        fields = ["image"]
+        fields = ["image", "placeholder"]
         depth = 2
 
 class UserProfileSerializer(serializers.ModelSerializer):

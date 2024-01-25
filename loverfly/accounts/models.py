@@ -14,7 +14,7 @@ class UserProfile(models.Model):
     )
     username = models.CharField(max_length=25, unique=True)
     email = models.EmailField(null=True, blank=True)
-    profile_picture = models.OneToOneField(to="ProfilePicture", blank=False, null=True, on_delete=models.CASCADE)
+    profile_picture = models.OneToOneField(to="ProfilePicture", blank=True, null=True, on_delete=models.CASCADE)
     my_partner = models.OneToOneField(
         to="self",
         blank=True,
@@ -34,11 +34,13 @@ class UserProfile(models.Model):
 def create_user_profile(instance, **kwargs):
     try:
         # create the user profile is it doesn't exist:
-        _ = UserProfile.objects.get_or_create(
+        user_profile, created = UserProfile.objects.get_or_create(
             user=instance,
             username=instance.username,
             email=instance.email,
         )
+        # once a user profile is created create a profile picture instance for it:
+        ProfilePicture.create(user_profile=user_profile)
     except Exception as e:
         print(
             f"An error occured during signal function : create_user_profile : {str(e)}")
@@ -55,6 +57,7 @@ def set_couple_and_like_counts(instance, **kwargs):
 
 def set_profile_picture_location(profile_picture, filename):
     return f"profile_pictures/{profile_picture.user_profile.id}"
+
 class ProfilePicture(models.Model):
     user_profile = models.OneToOneField(to=UserProfile, blank=True, null=True, on_delete=models.CASCADE)
     image = models.FileField(upload_to=set_profile_picture_location, blank=False, null=True)

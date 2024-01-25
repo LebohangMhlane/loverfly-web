@@ -75,8 +75,7 @@ def get_posts_for_feed(request, **kwargs):
 
 def prepare_post_data(post, current_user, couple, is_my_post):
     if not is_my_post:
-        is_liked = Liker.objects.filter(
-            post=post, liker__user=current_user).exists()
+        is_liked = Liker.objects.filter(post=post, liker__user=current_user).exists()
         is_admired = Admirer.objects.filter(admirer__user=current_user).exists()
         post_data = {
             "isLiked": is_liked,

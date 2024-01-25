@@ -17,7 +17,7 @@ admin.site.register(CommentLike)
 admin.site.register(CommentReply)
 admin.site.register(CommentReplyLike)
 admin.site.register(ProfilePicture)
-admin.site.register(UserSetting())
+admin.site.register(UserSetting)
 
 
 

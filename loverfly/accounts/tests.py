@@ -24,6 +24,16 @@ class AccountsTest(APISetupTests, TestCase):
         self.assertTrue(response.status_code == 200)
         # was the userprofile created successfully ?
         self.assertTrue(userprofile.username == "Johnny")
+        
+        # check that all went well when creating the profile picture defaults
+        profile_picture = ProfilePicture.objects.filter(userprofile=userprofile).first()
+        if profile_picture:
+            self.assertTrue(
+                profile_picture.image, 
+                "https://www.omgtb.com/wp-content/uploads/2021/04/620_NC4xNjE-1-scaled.jpg"
+            )
+        else:
+            raise
 
     def test_get_user_profile(self):
 
