@@ -5,11 +5,6 @@ from django.db.models.signals import pre_save
 from couples.models import Couple
 from likes.models import Liker
 
-# Create your models here.
-
-def post_image_location(post, filename):
-    return f"couple_posts/couple-id-{post.couple.id}/{filename}"
-
 class Post(models.Model):
     class Meta:
         get_latest_by = "time_posted"
@@ -18,7 +13,7 @@ class Post(models.Model):
         Couple, related_name="post_owner", blank=True, null=True, on_delete=models.CASCADE)
     time_posted = models.DateTimeField(default=django.utils.timezone.now)
     caption = models.CharField(max_length=25, null=True, blank=True)
-    post_image = models.FileField(upload_to=post_image_location, blank=False, null=True)
+    post_image = models.CharField(max_length=2000, null=False, default="")
     likes = models.PositiveBigIntegerField(default=0, blank=True)
     deleted = models.BooleanField(default=False)
     deleted_date = models.DateField(default=django.utils.timezone.now)

@@ -51,7 +51,7 @@ def get_posts_for_feed(request, **kwargs):
 
         # add my latest post to the list:
         my_latest_post = Post.objects.filter(Q(couple__partner_one__username=request.user.user.username) | 
-                              Q(couple__partner_two__username=request.user.user.username), couple__has_posts=True)
+            Q(couple__partner_two__username=request.user.user.username), couple__has_posts=True)
         if my_latest_post:
             my_latest_post = my_latest_post.latest()
             my_latest_post = prepare_post_data(
