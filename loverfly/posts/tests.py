@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.db.models import Q
-from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import reverse
 from django.test import TestCase
 from django.urls import reverse
@@ -19,7 +18,7 @@ class PostTests(APISetupTests, TestCase):
             Q(partner_two__id=self.main_user.data["id"])).first()
         data = {
             'image_name': "test_image",
-            "image": SimpleUploadedFile("post-img-" + str(couple.id) + ".jpg", response.content),
+            "image": "https://machohairstyles.com/wp-content/uploads/2020/05/Chris-Hemsworth-Haircut_02-767x1024.jpg",
             "caption": "caption"
         }
         response = self.client.post(

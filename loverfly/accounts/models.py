@@ -60,7 +60,7 @@ def set_profile_picture_location(profile_picture, filename):
 
 class ProfilePicture(models.Model):
     user_profile = models.OneToOneField(to=UserProfile, blank=True, null=True, on_delete=models.CASCADE)
-    image = models.FileField(upload_to=set_profile_picture_location, blank=False, null=True)
+    image = models.CharField(max_length=2000, null=False, default="")
 
     def __str__(self) -> str:
         return f"{self.user_profile.id} - {self.user_profile.username}"
