@@ -48,4 +48,5 @@ def set_partner_data(instance, *args, **kwargs):
 
 @receiver(pre_save, sender=Couple)
 def update_admirer_counts(instance, *args, **kwargs):
-    instance.admirers = Admirer.objects.filter(couple=instance).count()
+    if instance.pk:
+        instance.admirers = Admirer.objects.filter(couple=instance).count()

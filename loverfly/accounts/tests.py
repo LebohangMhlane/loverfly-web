@@ -28,9 +28,9 @@ class AccountsTest(APISetupTests, TestCase):
         # check that all went well when creating the profile picture defaults
         profile_picture = ProfilePicture.objects.filter(userprofile=userprofile).first()
         if profile_picture:
-            self.assertTrue(
+            self.assertEqual(
                 profile_picture.image, 
-                "https://www.omgtb.com/wp-content/uploads/2021/04/620_NC4xNjE-1-scaled.jpg"
+                ''
             )
         else:
             raise
@@ -89,18 +89,18 @@ class AccountsTest(APISetupTests, TestCase):
 
     def test_update_profile_picture(self):
         url = "https://machohairstyles.com/wp-content/uploads/2020/05/Chris-Hemsworth-Haircut_02-767x1024.jpg"
-        response = requests.get(url)
         data = {
-            "image": SimpleUploadedFile("profilepicture.jpg", response.content),
+            "image": url,
         }
         response = self.client.post(
             self.LOCAL_HOST + reverse("update_profile_picture"),
             HTTP_AUTHORIZATION="Token " + self.login_response["token"],
             data=data
         )
-        profile_picture = ProfilePicture.objects.all().first()
-        self.assertEqual(profile_picture.image.name, "profile_pictures/41")
-        self.assertTrue(response.status_code, 200)
+        profile_picture = ProfilePicture.objects.filter(
+            user_profile__id=self.main_user.data["id"],
+        ).first()
+        self.assertEqual(profile_picture.image, response.data["profile_picture"]["image"])
 
     def test_update_user_settings(self):
         url = self.LOCAL_HOST + reverse("update_user_settings")

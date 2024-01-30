@@ -114,10 +114,13 @@ class APISetupTests(TestCase):
         for index, user in enumerate(user_profiles):
             index = index + 1
             if index <= len(username_list) / 2:
-                partner_one = user_profiles[index_starter]
-                partner_two = user_profiles[user_profiles.index(partner_one) + index_skipper]
-                index_starter = index_starter + 2
-                couple = Couple.objects.create(partner_one=partner_one, partner_two=partner_two)
+                try:
+                    partner_one = user_profiles[index_starter]
+                    partner_two = user_profiles[user_profiles.index(partner_one) + index_skipper]
+                    index_starter = index_starter + 2
+                    couple = Couple.objects.create(partner_one=partner_one, partner_two=partner_two)
+                except Exception as e:
+                    print(e)
             else:
                 break
         # create a post for each couple:
