@@ -4,5 +4,12 @@
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
-    "jira-plugin.workingProject": ""
+    "jira-plugin.workingProject": "",
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./loverfly",
+        "-p",
+        "test*.py"
+    ]
 }
