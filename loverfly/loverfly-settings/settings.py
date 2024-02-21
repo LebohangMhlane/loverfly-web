@@ -25,7 +25,7 @@ SECRET_KEY = "django-ersecure-#&a_n8pig2c5kb17zw+zljtkii)!jmu6*g^djnsg=he%-s#mxm
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.0.93", "localhost", "127.0.0.1", "44.223.68.62:8000"]
+ALLOWED_HOSTS = ["192.168.0.93", "localhost", "127.0.0.1", "44.223.68.62"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
