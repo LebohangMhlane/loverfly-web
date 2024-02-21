@@ -167,10 +167,10 @@ DEFAULT_FILE_STORAGE = "storages.backends.s3.S3Storage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# aws storage configs:
-AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
-AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
-AWS_STORAGE_BUCKET_NAME = os.environ["AWS_STORAGE_BUCKET_NAME"]
+# aws credentials:
+AWS_ACCESS_KEY_ID = 'AKIA6JFNYGWEUIS6USBS'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'loverfly-media'
 AWS_QUERYSTRING_AUTH = False
 AWS_LOCATION = 'post-images/'
 
