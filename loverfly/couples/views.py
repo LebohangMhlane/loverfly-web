@@ -8,6 +8,7 @@ import shortuuid
 from couples.models import Couple
 from couples.serializers import CoupleSerializer
 from accounts.models import UserProfile
+from admirers.models import Admirer
 
 @api_view(["GET"])
 @permission_classes([])
@@ -16,10 +17,19 @@ def get_couple(request, **kwargs):
     # see if we can find the couple:
     couple = Couple.objects.filter(id=kwargs["couple_id"]).first()
 
+    # am i admiring this couple:
+    is_admired = Admirer.objects.filter(
+        admirer=request.user.user, 
+        couple=couple
+    ).exists()
+
     # if a couple is found then retun it serialized:
     if couple:
         couple_serialized = CoupleSerializer(couple, many=False)
-        return Response({"couple": couple_serialized.data})
+        return Response({
+            "couple": couple_serialized.data,
+            "isAdmired": is_admired
+        })
     else:
         return Response({"error": "A couple with this ID was not found"})
 
