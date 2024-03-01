@@ -9,7 +9,6 @@ from couples.models import Couple
 from admirers.models import Admirer
 from couples.serializers import CoupleSerializer
 from admirers.serializers import AdmirerSerializer
-from accounts.models import UserProfile
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
